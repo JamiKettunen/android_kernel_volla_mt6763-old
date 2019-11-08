@@ -36,6 +36,7 @@
 #endif
 
 #include <linux/atomic.h>
+#include <asm/bugs.h>
 #include <asm/smp.h>
 #include <asm/cacheflush.h>
 #include <asm/cpu.h>
@@ -461,6 +462,9 @@ asmlinkage void secondary_start_kernel(void)
 	 */
 	set_cpu_online(cpu, true);
 	aee_rr_rec_hotplug_footprint(cpu, 12);
+
+	check_other_bugs();
+
 	complete(&cpu_running);
 	aee_rr_rec_hotplug_footprint(cpu, 13);
 
