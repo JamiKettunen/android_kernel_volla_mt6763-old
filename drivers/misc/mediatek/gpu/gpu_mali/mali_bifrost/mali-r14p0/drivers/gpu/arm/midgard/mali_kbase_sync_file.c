@@ -171,8 +171,8 @@ static void kbase_fence_wait_callback(struct dma_fence *fence,
 
 	/* Cancel atom if fence is erroneous */
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0) || \
-	 (LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) && \
-	  LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 68)))
+	 (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 68) && \
+	   LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)))
 	if (dma_fence_is_signaled(kcb->fence) && kcb->fence->error)
 #else
 	if (dma_fence_is_signaled(kcb->fence) && kcb->fence->status < 0)
@@ -289,8 +289,8 @@ static void kbase_sync_fence_info_get(struct dma_fence *fence,
 	 */
 	if (dma_fence_is_signaled(fence)) {
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0) || \
-	 (LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) && \
-	  LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 68)))
+	 (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 68) && \
+	   LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)))
 		int status = fence->error;
 #else
 		int status = fence->status;
