@@ -266,9 +266,7 @@ static void ufshcd_add_command_trace(struct ufs_hba *hba,
 		tag = tag & 0xFF; /* tag of targeted requeset: task_id */
 
 		ufs_mtk_dbg_add_trace(event, tag, lun, transfer_len, lba, opcode);
-
 	} else {
-
 		lrbp = &hba->lrb[tag];
 
 		if (lrbp->cmd) { /* data phase exists */
@@ -338,7 +336,6 @@ static void ufshcd_print_clk_freqs(struct ufs_hba *hba)
 
 static void ufshcd_print_host_regs(struct ufs_hba *hba)
 {
-
 	if (!(hba->ufshcd_dbg_print & UFSHCD_DBG_PRINT_HOST_REGS_EN))
 		return;
 
@@ -393,7 +390,8 @@ void ufshcd_print_trs(struct ufs_hba *hba, unsigned long bitmap, bool pr_prdt)
 	}
 }
 
-void ufshcd_print_host_state(struct ufs_hba *hba, u32 mphy_info, struct seq_file *m, char **buff, unsigned long *size)
+void ufshcd_print_host_state(struct ufs_hba *hba, u32 mphy_info, struct seq_file *m,
+				char **buff, unsigned long *size)
 {
 	int err = 0;
 	u32 val;
@@ -1696,7 +1694,7 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
 		if (err) {
 			err = -EIO;
 			clear_bit_unlock(tag, &hba->lrb_in_use);
-			dev_info(hba->dev, "%s: fail in crypto hook, req: %p\n", __func__, cmd->request);
+			dev_err(hba->dev, "%s: fail in crypto hook, req: %p\n", __func__, cmd->request);
 			goto out;
 		}
 	} else {
@@ -4506,7 +4504,7 @@ static void ufshcd_set_req_abort_skip(struct ufs_hba *hba, unsigned long bitmap)
 		lrbp = &hba->lrb[tag];
 		lrbp->req_abort_skip = true;
 
-		dev_info(hba->dev, "%s: set tag %d as req_abort_skip\n", __func__, tag);
+		dev_err(hba->dev, "%s: set tag %d as req_abort_skip\n", __func__, tag);
 	}
 }
 
@@ -4541,7 +4539,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
 	ufshcd_hold(hba, false);
 
 	/* MTK Patch: debugging log for aborting cmd */
-	dev_info(hba->dev,
+	dev_err(hba->dev,
 		"abort: tag %d, cmd 0x%x\n", tag, (int)cmd->cmnd[0]);
 
 	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
@@ -4562,7 +4560,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
 	lrbp = &hba->lrb[tag];
 
 	/* Print Transfer Request of aborted task */
-	dev_info(hba->dev, "%s: Device abort task at tag %d", __func__, tag);
+	dev_err(hba->dev, "%s: Device abort task at tag %d", __func__, tag);
 
 	ufshcd_cond_add_cmd_trace(hba, tag, UFS_TRACE_ABORTING);
 
@@ -4618,7 +4616,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
 				__func__, tag);
 			goto out;
 		} else {
-			dev_info(hba->dev,
+			dev_err(hba->dev,
 				"%s: no response from device. tag = %d, err %d",
 				__func__, tag, err);
 			if (!err)
@@ -4637,7 +4635,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
 	if (err || resp != UPIU_TASK_MANAGEMENT_FUNC_COMPL) {
 		if (!err) {
 			err = resp; /* service response error */
-			dev_info(hba->dev, "%s: issued. tag = %d, err %d",
+			dev_err(hba->dev, "%s: issued. tag = %d, err %d",
 				__func__, tag, err);
 		}
 		goto out;
@@ -4645,7 +4643,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
 
 	err = ufshcd_clear_cmd(hba, tag);
 	if (err) {
-		dev_info(hba->dev, "%s: Failed clearing cmd at tag %d, err %d",
+		dev_err(hba->dev, "%s: Failed clearing cmd at tag %d, err %d",
 			__func__, tag, err);
 		goto out;
 	}
@@ -6497,9 +6495,7 @@ int ufshcd_system_resume(struct ufs_hba *hba)
 		return 0;
 
 	ret = ufshcd_resume(hba, UFS_SYSTEM_PM);
-
 	dev_dbg(hba->dev, "sr,ret %d,%d us\n", ret, (int)ktime_to_us(ktime_sub(ktime_get(), start)));
-
 	return ret;
 }
 EXPORT_SYMBOL(ufshcd_system_resume);
@@ -6528,9 +6524,7 @@ int ufshcd_runtime_suspend(struct ufs_hba *hba)
 		return 0;
 
 	ret = ufshcd_suspend(hba, UFS_RUNTIME_PM);
-
-	dev_info(hba->dev, "rs,ret %d,%d us\n", ret, (int)ktime_to_us(ktime_sub(ktime_get(), start)));
-
+	dev_dbg(hba->dev, "rs,ret %d,%d us\n", ret, (int)ktime_to_us(ktime_sub(ktime_get(), start)));
 	return ret;
 }
 EXPORT_SYMBOL(ufshcd_runtime_suspend);
@@ -6562,7 +6556,6 @@ int ufshcd_runtime_resume(struct ufs_hba *hba)
 	 * MTK PATCH:
 	 * Calculate time cost by PM callback.
 	 */
-
 	int ret;
 	ktime_t start = ktime_get();
 
@@ -6571,11 +6564,10 @@ int ufshcd_runtime_resume(struct ufs_hba *hba)
 
 	if (!hba->is_powered)
 		return 0;
-	else {
-		ret = ufshcd_resume(hba, UFS_RUNTIME_PM);
-		dev_info(hba->dev, "rr,ret %d,%d us\n", ret, (int)ktime_to_us(ktime_sub(ktime_get(), start)));
-		return ret;
-	}
+
+	ret = ufshcd_resume(hba, UFS_RUNTIME_PM);
+	dev_dbg(hba->dev, "rr,ret %d,%d us\n", ret, (int)ktime_to_us(ktime_sub(ktime_get(), start)));
+	return ret;
 }
 EXPORT_SYMBOL(ufshcd_runtime_resume);
 
