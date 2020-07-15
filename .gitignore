@@ -38,6 +38,8 @@ modules.builtin
 Module.symvers
 *.dwo
 *.su
+*.lex.c
+*.mod
 
 #
 # Top-level generic files
@@ -65,15 +67,17 @@ Module.symvers
 #
 # git files that we don't want to ignore even it they are dot-files
 #
+!.clang-format
+!.cocciconfig
 !.gitignore
 !.mailmap
 
 #
 # Generated include files
 #
-include/config
-include/generated
-arch/*/include/generated
+/include/config/
+/include/generated/
+/arch/*/include/generated/
 
 # stgit generated dirs
 patches-*
@@ -108,8 +112,21 @@ signing_key.priv
 signing_key.x509
 x509.genkey
 
-# Kconfig presets
-all.config
+# Kconfig savedefconfig output
+/defconfig
 
 # Kdevelop4
 *.kdev4
+
+# Clang's compilation database file
+/compile_commands.json
+
+# Additional changes for this Android kernel
+*.diff
+*.dtb*
+arch/arm64/boot/dts/k63v2_64_bsp/
+/dtboimg.cfg
+/*.img
+/*.zip
+/linux-stable.sh
+modules.order
