@@ -27,7 +27,7 @@ long _map_user_pages(struct MTIOMMU_PIN_RANGE_T *pinRange,
 	struct page **pages;
 	struct vm_area_struct *vma;
 	int res, j;
-	uint32_t write;
+	unsigned int gup_flags;
 
 	if ((uaddr == 0) || (size == 0))
 		return -EFAULT;
@@ -43,7 +43,7 @@ long _map_user_pages(struct MTIOMMU_PIN_RANGE_T *pinRange,
 		return -ENOMEM;
 
 	pinRange->pageArray = (void *) pages;
-	write = (control == 0) ? 1 : 0;
+	gup_flags = (control == 0) ? FOLL_WRITE : 0;
 
 	/* Try to fault in all of the necessary pages */
 	down_read(&current->mm->mmap_sem);
@@ -55,8 +55,7 @@ long _map_user_pages(struct MTIOMMU_PIN_RANGE_T *pinRange,
 	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
 		pinRange->isPage = 1;
 		res = get_user_pages(current, current->mm, uaddr, nr_pages,
-					write, 0,/* don't force */
-					pages, NULL);
+					gup_flags, pages, NULL);
 	} else {
 		/* pfn mapped memory, don't touch page struct.
 		 * the buffer manager (possibly ion) should make sure

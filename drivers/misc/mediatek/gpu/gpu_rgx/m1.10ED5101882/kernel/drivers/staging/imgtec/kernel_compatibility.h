@@ -215,7 +215,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * to pass it on every function call.
 */
 #define get_user_pages(start, nr_pages, gup_flags, pages, vmas) \
-	get_user_pages(current, current->mm, start, nr_pages, gup_flags & FOLL_WRITE, gup_flags & FOLL_FORCE, pages, vmas)
+	get_user_pages(current, current->mm, start, nr_pages, gup_flags, pages, vmas)
 
 #elif (LINUX_VERSION_CODE < KERNEL_VERSION(4, 9, 0))
 
