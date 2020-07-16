@@ -2289,7 +2289,7 @@ static struct rt6_info *rt6_get_route_info(struct net *net,
 		goto out;
 
 	for (rt = fn->leaf; rt; rt = rt->dst.rt6_next) {
-		if (rt->dst.dev->ifindex != dev->ifindex)
+		if (rt->dst.dev->ifindex != ifindex)
 			continue;
 		if ((rt->rt6i_flags & (RTF_ROUTEINFO|RTF_GATEWAY)) != (RTF_ROUTEINFO|RTF_GATEWAY))
 			continue;
