@@ -125,6 +125,7 @@ x509.genkey
 *.diff
 *.dtb*
 arch/arm64/boot/dts/k63v2_64_bsp/
+out/
 /dtboimg.cfg
 /*.img
 /*.zip
