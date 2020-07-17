@@ -76,7 +76,7 @@
  */
 #define L1_ENTRIES_MAX	512
 
-#if KERNEL_VERSION(4, 6, 0) > LINUX_VERSION_CODE
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 6, 0)
 static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 			     unsigned long nr_pages, int write,
 			     struct page **pages)
@@ -88,7 +88,7 @@ static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 
 	return get_user_pages(NULL, mm, start, nr_pages, flags, pages, NULL);
 }
-#elif KERNEL_VERSION(4, 9, 0) > LINUX_VERSION_CODE
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(4, 9, 0)
 static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 			     unsigned long nr_pages, int write,
 			     struct page **pages)
@@ -101,7 +101,7 @@ static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 	return get_user_pages_remote(NULL, mm, start, nr_pages, write, 0, pages,
 				     NULL);
 }
-#elif KERNEL_VERSION(4, 10, 0) > LINUX_VERSION_CODE
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
 static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 			     unsigned long nr_pages, int write,
 			     struct page **pages)
@@ -282,7 +282,7 @@ static void mmu_release(struct tee_mmu *mmu)
 			int i;
 
 			for (i = 0; i < L2_ENTRIES_MAX; i++) {
-#if (KERNEL_VERSION(4, 7, 0) > LINUX_VERSION_CODE) || defined(CONFIG_ARM)
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 7, 0)) || defined(CONFIG_ARM)
 				{
 					if (g_ctx.f_lpae)
 						pte = *pte64++;
