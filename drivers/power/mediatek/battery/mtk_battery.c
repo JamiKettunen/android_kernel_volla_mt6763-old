@@ -3142,7 +3142,7 @@ static DEVICE_ATTR(charger_type, 0664, show_charger_type, store_charger_type);
 static int battery_callback(
 	struct notifier_block *nb, unsigned long event, void *v)
 {
-	bm_err("%s:%ld\n",
+	bm_debug("%s:%ld\n",
 		__func__, event);
 	switch (event) {
 	case CHARGER_NOTIFY_EOC:
