@@ -560,7 +560,7 @@ static int mt6370_init_alert(struct tcpc_device *tcpc)
 
 	snprintf(name, PAGE_SIZE, "%s-IRQ", chip->tcpc_desc->name);
 
-	pr_info("%s name = %s, gpio = %d\n", __func__,
+	pr_debug("%s name = %s, gpio = %d\n", __func__,
 				chip->tcpc_desc->name, chip->irq_gpio);
 
 	ret = devm_gpio_request(chip->dev, chip->irq_gpio, name);
@@ -588,7 +588,7 @@ static int mt6370_init_alert(struct tcpc_device *tcpc)
 		goto init_alert_err;
 	}
 
-	pr_info("%s : IRQ number = %d\n", __func__, chip->irq);
+	pr_debug("%s : IRQ number = %d\n", __func__, chip->irq);
 
 	init_kthread_worker(&chip->irq_worker);
 	chip->irq_worker_task = kthread_run(kthread_worker_fn,
@@ -601,7 +601,7 @@ static int mt6370_init_alert(struct tcpc_device *tcpc)
 	sched_setscheduler(chip->irq_worker_task, SCHED_FIFO, &param);
 	init_kthread_work(&chip->irq_work, mt6370_irq_work_handler);
 
-	pr_info("IRQF_NO_THREAD Test\r\n");
+	pr_debug("IRQF_NO_THREAD Test\n");
 	ret = request_irq(chip->irq, mt6370_intr_handler,
 		IRQF_TRIGGER_FALLING | IRQF_NO_THREAD |
 		IRQF_NO_SUSPEND, name, chip);
@@ -1316,7 +1316,7 @@ static int mt_parse_dt(struct mt6370_chip *chip, struct device *dev)
 	if (!np)
 		return -EINVAL;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 
 	np = of_find_node_by_name(NULL, "type_c_port0");
 	if (!np) {
@@ -1365,21 +1365,21 @@ static void check_printk_performance(void)
 	}
 	for (i = 0; i < 10; i++) {
 		t1 = local_clock();
-		pr_info("%d\n", i);
+		pr_debug("%d\n", i);
 		t2 = local_clock();
 		t2 -= t1;
 		nsrem = do_div(t2, 1000000000);
-		pr_info("pr_info : t2-t1 = %lu\n",
+		pr_debug("pr_info : t2-t1 = %lu\n",
 				(unsigned long)nsrem / 1000);
 	}
 #else
 	for (i = 0; i < 10; i++) {
 		t1 = local_clock();
-		pr_info("%d\n", i);
+		pr_debug("%d\n", i);
 		t2 = local_clock();
 		t2 -= t1;
 		nsrem = do_div(t2, 1000000000);
-		pr_info("t2-t1 = %lu\n",
+		pr_debug("t2-t1 = %lu\n",
 				(unsigned long)nsrem /  1000);
 		PD_BUG_ON(nsrem > 100*1000);
 	}
@@ -1542,12 +1542,12 @@ static int mt6370_i2c_probe(struct i2c_client *client,
 	int ret = 0, chip_id;
 	bool use_dt = client->dev.of_node;
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	if (i2c_check_functionality(client->adapter,
 			I2C_FUNC_SMBUS_I2C_BLOCK | I2C_FUNC_SMBUS_BYTE_DATA))
-		pr_info("I2C functionality : OK...\n");
+		pr_debug("I2C functionality : OK...\n");
 	else
-		pr_info("I2C functionality check : failuare...\n");
+		pr_err("I2C functionality check : failure...\n");
 
 	chip_id = mt6370_check_revision(client);
 	if (chip_id < 0)
@@ -1577,7 +1577,7 @@ static int mt6370_i2c_probe(struct i2c_client *client,
 		"mt6370_irq_wakelock");
 
 	chip->chip_id = chip_id;
-	pr_info("mt6370_chipID = 0x%0x\n", chip_id);
+	pr_debug("mt6370_chipID = 0x%0x\n", chip_id);
 
 	ret = mt6370_regmap_init(chip);
 	if (ret < 0) {
