@@ -552,11 +552,11 @@ int mt6356_get_auxadc_value(u8 channel)
 				if (is_charging == 0)
 					bat_cur = 0 - bat_cur;
 				if (boot_time)
-					pr_notice("[%s] ch_idx = %d, channel = %d, bat_cur = %d, reg_val = 0x%x, adc_result = %d\n",
+					pr_debug("[%s] ch_idx = %d, channel = %d, bat_cur = %d, reg_val = 0x%x, adc_result = %d\n",
 					__func__, channel, auxadc_channel->ch_num, bat_cur, reg_val, adc_result);
 			} else {
 				if (boot_time)
-					pr_notice("[%s] ch_idx = %d, channel = %d, reg_val = 0x%x, adc_result = %d\n",
+					pr_debug("[%s] ch_idx = %d, channel = %d, reg_val = 0x%x, adc_result = %d\n",
 					__func__, channel, auxadc_channel->ch_num, reg_val, adc_result);
 			}
 		}
