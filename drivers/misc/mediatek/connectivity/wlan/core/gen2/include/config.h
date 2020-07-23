@@ -489,7 +489,7 @@
  * Flags and Parameters for Support EMI DEBUG
  *------------------------------------------------------------------------------
  */
-#define CFG_SUPPORT_EMI_DEBUG                   1
+#define CFG_SUPPORT_EMI_DEBUG                   0
 
 
 /*------------------------------------------------------------------------------
