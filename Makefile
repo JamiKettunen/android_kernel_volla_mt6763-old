@@ -741,6 +741,10 @@ else
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 endif
 
+ifneq ($(shell $(LD) --version 2>&1 | head -n 1 | grep LLD),)
+KBUILD_LDFLAGS += -O2
+endif
+
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
 ifdef CONFIG_FRAME_POINTER
 KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
