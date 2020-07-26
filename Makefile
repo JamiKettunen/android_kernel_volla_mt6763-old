@@ -879,6 +879,10 @@ ifeq ($(CONFIG_STRIP_ASM_SYMS),y)
 LDFLAGS_vmlinux	+= $(call ld-option, -X,)
 endif
 
+ifneq ($(shell $(LD) --version 2>&1 | head -n 1 | grep LLD),)
+LDFLAGS_vmlinux	+= -z notext
+endif
+
 # Default kernel image to build when no specific target is given.
 # KBUILD_IMAGE may be overruled on the command line or
 # set in the environment
