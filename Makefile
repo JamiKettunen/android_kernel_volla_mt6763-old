@@ -621,7 +621,7 @@ CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
 endif
 CLANG_FLAGS	+= -no-integrated-as
 ifneq ($(shell $(LD) --version 2>&1 | head -n 1 | grep LLD),)
-CLANG_FLAGS	+= -fuse-ld=$(shell which $(LD))
+CLANG_FLAGS	+= --ld-path=$(shell which $(LD))
 endif
 KBUILD_CPPFLAGS	+= -Qunused-arguments
 KBUILD_CFLAGS	+= $(CLANG_FLAGS)
