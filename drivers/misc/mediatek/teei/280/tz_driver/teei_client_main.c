@@ -95,7 +95,7 @@
 #ifdef CONFIG_MICROTRUST_TZ_DRIVER_MTK_BOOTPROF
 #define TEEI_BOOT_FOOTPRINT(str) log_boot(str)
 #else
-#define TEEI_BOOT_FOOTPRINT(str) IMSG_PRINTK("%s\n", str)
+#define TEEI_BOOT_FOOTPRINT(str) IMSG_PRINTK_DEBUG("%s\n", str)
 #endif
 
 #define DECLARE_SEMA(name, init_value) \
